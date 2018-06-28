@@ -9,9 +9,9 @@
 		<version>1.5.6.RELEASE</version>
 		<relativePath />
 	</parent>
-	<artifactId>spring-boot-websocket-netty-server</artifactId>
+	<artifactId>QiuqiuChatRoom</artifactId>
 	<packaging>war</packaging>
-	<name>spring-boot-websocket-netty-server</name>
+	<name>QiuqiuChatRoom</name>
 	<url>http://maven.apache.org</url>
 
 	<dependencies>
