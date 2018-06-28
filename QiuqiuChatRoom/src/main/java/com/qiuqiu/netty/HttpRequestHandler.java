@@ -45,7 +45,6 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-		System.out.println(request.uri());
 		String uri = StringUtils.substringBefore(request.uri(), "?");
 		//如果是websocket请求
 		if(webUri.equalsIgnoreCase(uri)) {

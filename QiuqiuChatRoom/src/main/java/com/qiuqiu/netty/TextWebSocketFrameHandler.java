@@ -3,8 +3,10 @@ package com.qiuqiu.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.qiuqiu.dao.UserRepository;
 import com.qiuqiu.pojo.ChatMessage;
 import com.qiuqiu.pojo.User;
+import com.qiuqiu.util.SpringUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,25 +17,53 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 
 public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>{
 	private final ChannelGroup group;
+	private static UserRepository userRepository;
+	static {
+		userRepository = SpringUtil.getBean(UserRepository.class);
+	}
+	private static User system = new User();
+	static {
+		system.setHeadImg("resources/img/head/gm.jpg");
+		system.setName("系统消息");
+	}
 	
 	public TextWebSocketFrameHandler(ChannelGroup group) {
 		this.group = group;
 	}
 	
+	
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 		if(evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
 			ctx.pipeline().remove(HttpRequestHandler.class);
-			
-			//加入当前, 上线人员推送前端，显示用户列表中去
 			Channel channel = ctx.channel();
-			ChatMessage message = new ChatMessage(null, "");
+			String token = channel.attr(ChatConstants.CHANNEL_TOKEN_KEY).get();
+			User user = userRepository.getById(Long.valueOf(token));
+			ChatMessage message = new ChatMessage(system, "用户[" + user.getName() + "]上线");
 			group.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(message,SerializerFeature.DisableCircularReferenceDetect)));
-			group.add(channel);
-		}else {
-			super.userEventTriggered(ctx, evt);
 		}
 	}
+
+	@Override
+	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+		Channel channel = ctx.channel();
+		String token = channel.attr(ChatConstants.CHANNEL_TOKEN_KEY).get();
+		System.out.println("ttttttttttttttttttttt:"+token);
+		group.add(channel);
+	}
+
+	
+	
+	@Override
+	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+		Channel channel = ctx.channel();
+		String token = channel.attr(ChatConstants.CHANNEL_TOKEN_KEY).get();
+		User user = userRepository.getById(Long.valueOf(token));
+		ChatMessage message = new ChatMessage(system, "用户[" + user.getName() + "]下线");
+		group.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(message,SerializerFeature.DisableCircularReferenceDetect)));
+	}
+
+	
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {

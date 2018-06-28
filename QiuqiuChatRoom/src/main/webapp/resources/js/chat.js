@@ -39,7 +39,7 @@ $(document).ready(function() {
     			
     			var newmsg = "<div class='media'><div class='media-left'>"
                             + "<a href='#'>" 
-                            + "<img class='media-object' src='" + cur.headImg + "' alt='...'></a></div>"
+                            + "<img height='50px' width='50px' class='media-object' src='" + cur.headImg + "' alt='...'></a></div>"
                             + "<div class='media-body'><h4 class='media-heading'>"  
                             +   "<h5 style='color:grey;'>" + name + "&nbsp;&nbsp;" +obj.createTime+ "</h5>"
                             +   "<p>" + obj.message + "</p></div></div><hr style='margin:0 0 0 0;'/>";
@@ -117,7 +117,7 @@ function refresh(data) {
 	 $.each(data, function(key, obj) {
 		 h += "<div class='media'><div class='media-left'>"
              + "<a href='#'>" 
-             + "<img class='media-object' src='" + obj.headImg + "' alt='...'></a></div>"
+             + "<img height='50px' width='50px' class='media-object' src='" + obj.headImg + "' alt='...'></a></div>"
              + "<div class='media-body'><h4 class='media-heading'>"  
              +   "<h5 style='color:grey;'>" + obj.name + "</h5></div></div>";
 	 });

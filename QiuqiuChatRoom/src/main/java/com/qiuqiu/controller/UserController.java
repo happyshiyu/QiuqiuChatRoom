@@ -1,6 +1,9 @@
 package com.qiuqiu.controller;
 
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -8,9 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.qiuqiu.dao.UserRepository;
 import com.qiuqiu.pojo.User;
+import com.qiuqiu.util.FastDFSClient;
+import com.qiuqiu.util.Result;
 
 @Controller
 public class UserController {
@@ -79,10 +87,44 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "test", method = RequestMethod.POST)
-	public void test(User user) {
-		User u = userRepository.getById(15300621413L);
-		System.out.println(u);
-		
+	/**
+	 * 修改密码
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "change", method = RequestMethod.POST)
+	public Result change(String username, String oldpass, String newpass) {
+		User user = userRepository.getByUsernameAndPassword(username, oldpass);
+		if(user == null)
+			return new Result(400,"用户名或密码错误",null);
+		else {
+			user.setPassword(newpass);
+			userRepository.saveAndFlush(user);
+			return new Result(200,"修改密码成功",null);
+		}
+			
 	}
+	
+	@RequestMapping(value = "/imgUpdate", produces = "application/json; charset=utf-8", 
+			method = RequestMethod.POST, consumes = "multipart/form-data")
+    @ResponseBody
+    public Result imgUpdate(@RequestParam(value = "file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return new Result(400, "文件不能为空", null);
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        String extName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        try {
+        	//创建一个FastDFS的客户端
+			FastDFSClient fastDFSClient = new FastDFSClient("classpath:conf/client.conf");
+			String path = fastDFSClient.uploadFile(file.getBytes(), extName);
+			System.out.println("192.168.25.133:22122/" + path);
+			return new Result(200, "文件上传成功", null);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+        return new Result(400, "文件上传失败", null);
+    }
+
 }
