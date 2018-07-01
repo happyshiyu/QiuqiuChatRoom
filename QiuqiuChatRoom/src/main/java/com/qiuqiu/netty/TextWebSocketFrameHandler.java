@@ -47,8 +47,6 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 		Channel channel = ctx.channel();
-		String token = channel.attr(ChatConstants.CHANNEL_TOKEN_KEY).get();
-		System.out.println("ttttttttttttttttttttt:"+token);
 		group.add(channel);
 	}
 
