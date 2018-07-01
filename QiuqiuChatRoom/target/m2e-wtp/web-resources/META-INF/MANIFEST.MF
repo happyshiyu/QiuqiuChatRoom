@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Implementation-Title: spring-boot-websocket-netty-server
+Implementation-Title: QiuqiuChatRoom
 Implementation-Version: 1.5.6.RELEASE
 Built-By: qiu12
 Implementation-Vendor-Id: org.springframework.boot

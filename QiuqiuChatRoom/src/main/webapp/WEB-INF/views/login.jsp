@@ -15,11 +15,11 @@
             <h1 class="text-center" style="width: 100%">Qiuqiu聊天室</h1>
             <div class="form-group">
                 <label for="username">账号</label>
-                <input type="text" class="form-control" id="username" placeholder="请输入用户名" name="username">
+                <input type="text" class="form-control" id="username" placeholder="请输入用户名" name="username" required ="true">
             </div>
             <div class="form-group">
                 <label for="password">密码</label>
-                <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password">
+                <input type="password" class="form-control" id="password" placeholder="请输入密码" name="password" required ="true">
             </div>
             <div>
             	<p style="color: red;">${msg }</p>
