@@ -10,25 +10,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.qiuqiu.dao.UserRepository;
 import com.qiuqiu.netty.ChatConstants;
 import com.qiuqiu.pojo.User;
-
-import cn.qiuqiu.service.UserService;
 
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
+	
 	@Autowired
-	UserService userService;
+	UserRepository userRepository;
 	
 	@RequestMapping(value = "users")
 	public Map<String, Object> users(@RequestBody String json) {
 		JSONObject jsonObject = JSON.parseObject(json);
 		Long id = jsonObject.getLong("id");
 		Map<String, User> onlines = ChatConstants.onlines;
-		User user = userService.getById(id);
+		User cur = userRepository.getById(id);
 		Map<String, Object> map = new HashMap<String, Object>(2);	
-		map.put("curName", user.getName());
+		map.put("curName", cur.getName());
 		map.put("users", onlines);
 		return map;
 	}
